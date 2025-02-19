@@ -16,6 +16,6 @@ function App() {
       </Routes>
     </Router>
   )
-}f
+}
 
 export default App
