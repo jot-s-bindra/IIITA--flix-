@@ -1,0 +1,24 @@
+/* src/pages/Feed.css */
+.feed-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .video-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  
+  .video-card {
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 4px;
+  }
+  
+  @media (max-width: 768px) {
+    .video-grid {
+      grid-template-columns: 1fr;
+    }
+  }
