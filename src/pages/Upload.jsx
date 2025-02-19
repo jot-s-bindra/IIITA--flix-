@@ -1,8 +1,9 @@
 // src/pages/Upload.jsx
 import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
-import '../css/global.css'
+import axios from 'axios'
 import '../css/upload.css'
+import '../css/global.css'
 
 const Upload = () => {
   const { userId } = useParams()
@@ -11,6 +12,7 @@ const Upload = () => {
   const [file, setFile] = useState(null)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+  const [isUploading, setIsUploading] = useState(false)
 
   const validateVideo = (file) => {
     return new Promise((resolve, reject) => {
@@ -46,6 +48,19 @@ const Upload = () => {
     setTitle(e.target.value)
   }
 
+  const uploadToS3 = async (file, presignedUrl) => {
+    try {
+      await axios.put(presignedUrl, file, {
+        headers: {
+          'Content-Type': file.type
+        }
+      })
+      return true
+    } catch (err) {
+      throw new Error('Error uploading to S3')
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -54,16 +69,34 @@ const Upload = () => {
       return
     }
 
+    setIsUploading(true)
+    setError('')
+    setMessage('Checking video duration...')
+
     try {
       await validateVideo(file)
+      setMessage('Video check passed. Preparing upload...')
 
-      setTimeout(() => {
-        setMessage(`Video "${title}" uploaded successfully by User ${userId}!`)
-        setFile(null)
-        setTitle('')
-      }, 1000)
+      setMessage('Getting upload permission...')
+      const response = await axios.post('http://localhost:5000/api/upload-url', {
+        title,
+        fileType: file.type,
+        userId
+      })
+
+      const { presignedUrl } = response.data
+
+      // Upload the Video to S3
+      setMessage('Uploading video to server...')
+      await uploadToS3(file, presignedUrl)
+
+      setMessage(`Success! Video "${title}" has been uploaded. 🎉`)
+      setFile(null)
+      setTitle('')
     } catch (err) {
-      setError(err)
+      setError(err.message || 'Error uploading video')
+    } finally {
+      setIsUploading(false)
     }
   }
 
@@ -86,7 +119,9 @@ const Upload = () => {
           <input type="file" accept="video/mp4" onChange={handleFileChange} />
         </div>
 
-        <button type="submit">Upload</button>
+        <button type="submit" disabled={isUploading}>
+          {isUploading ? 'Uploading...' : 'Upload'}
+        </button>
       </form>
 
       {error && <p className="upload-error">{error}</p>}
