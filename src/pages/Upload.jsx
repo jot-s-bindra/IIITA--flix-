@@ -6,6 +6,20 @@ import { validateVideo, uploadToS3 } from '../components/VideoUploader'
 import { getPresignedUrl } from '../services/uploadService'
 import '../css/upload.css'
 import '../css/global.css'
+import axios from 'axios'
+
+const notifyUploadService = async (userId, title, bucket) => {
+  try {
+    const response = await axios.post('http://localhost:5000/api/upload-success', {
+      userId,
+      title,
+      bucket
+    })
+    console.log('Notification sent successfully:', response.data)
+  } catch (error) {
+    console.error('Error notifying upload service:', error)
+  }
+}
 
 const Upload = () => {
   const { userId } = useParams()
@@ -55,9 +69,13 @@ const Upload = () => {
 
       // Upload the Video to S3
       setMessage('Uploading video to server...')
+      console.log('Uploading video to server...')
       await uploadToS3(file, presignedUrl)
 
+      await notifyUploadService(userId, title, 'iiita-flix-temp')
+      
       setMessage(`Success! Video "${title}" has been uploaded. 🎉`)
+      
       setFile(null)
       setTitle('')
     } catch (err) {
