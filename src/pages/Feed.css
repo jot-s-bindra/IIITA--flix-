@@ -1,24 +1,94 @@
 /* src/pages/Feed.css */
+
+/* General Styling */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Feed Title at Top */
+.feed-title {
+  position: absolute;  /* ✅ Fixed at the top */
+  top: 20px;  /* ✅ Distance from the top */
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2.5em;
+  font-weight: bold;
+  color: #202020;
+  z-index: 1;
+  text-align: center;
+}
+
+/* Feed Container */
 .feed-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
+  padding: 80px 20px 20px;  /* ✅ Added padding to prevent overlap */
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Video Grid Layout */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Video Card */
+.video-card {
+  display: block;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #fff;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+/* Hover Effect */
+.video-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Video Thumbnail */
+.thumbnail img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Video Info */
+.video-info {
+  padding: 12px 15px;
+  text-align: left;
+}
+
+.video-title {
+  font-size: 1.2em;
+  font-weight: 600;
+  margin: 0 0 5px;
+  color: #202020;
+}
+
+.video-user {
+  font-size: 0.9em;
+  color: #555;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
   .video-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   }
-  
-  .video-card {
-    border: 1px solid #ddd;
-    padding: 10px;
-    border-radius: 4px;
-  }
-  
-  @media (max-width: 768px) {
-    .video-grid {
-      grid-template-columns: 1fr;
-    }
-  }
+}

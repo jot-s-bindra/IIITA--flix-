@@ -1,31 +1,49 @@
 // src/pages/Feed.jsx
-import React from 'react'
-import { Link, useParams } from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Feed = () => {
-  const { userId } = useParams()
+    const [videos, setVideos] = useState([]);
 
-  // Mock video data
-  const videos = [
-    { id: 'video1', title: 'Introduction to React' },
-    { id: 'video2', title: 'Building with Vite' },
-    { id: 'video3', title: 'Mastering Kafka' },
-  ]
+    useEffect(() => {
+        const fetchVideos = async () => {
+            try {
+                const response = await axios.get('http://localhost:5000/api/videos'); // Adjust URL if needed
+                setVideos(response.data);
+            } catch (error) {
+                console.error('Error fetching videos:', error);
+            }
+        };
 
-  return (
-    <div style={{ padding: '20px' }}>
-      <h1>Video Feed</h1>
-      <ul style={{ listStyle: 'none', padding: 0 }}>
-        {videos.map((video) => (
-          <li key={video.id} style={{ marginBottom: '10px' }}>
-            <Link to={`/${userId}/watch/${video.id}`} style={{ textDecoration: 'none', color: '#007bff' }}>
-              {video.title}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
-  )
-}
+        fetchVideos();
+    }, []);
 
-export default Feed
+    return (
+        <div className="feed-container">
+            <h1 className="feed-title">IIITA-flix-Feed</h1>
+            <div className="video-grid">
+                {videos.map((video) => (
+                    <Link 
+                        key={`${video.userId}-${video.title}`} 
+                        to={`/${video.userId}/watch/${encodeURIComponent(video.title)}`} 
+                        className="video-card"
+                    >
+                        <div className="thumbnail">
+                            <img 
+                                src={`https://via.placeholder.com/320x180.png?text=${encodeURIComponent(video.title)}`} 
+                                alt={video.title} 
+                            />
+                        </div>
+                        <div className="video-info">
+                            <h3 className="video-title">{video.title}</h3>
+                            <p className="video-user">User: {video.userId}</p>
+                        </div>
+                    </Link>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+export default Feed;
