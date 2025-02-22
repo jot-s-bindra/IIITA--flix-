@@ -7,13 +7,12 @@ const Watch = () => {
     const { userId, videoId } = useParams();
     const [videoUrl, setVideoUrl] = useState(null);
     const videoRef = useRef(null);
-
+    const WATCH_SERVICE_URL = 'http://52.63.145.126:7000';
     // ✅ Fetch Pre-Signed URL
     useEffect(() => {
         const fetchVideoUrl = async () => {
             try {
-                const response = await axios.get(`http://localhost:7000/api/watch/${userId}/${videoId}`);
-                setVideoUrl(response.data.presignedUrl); // ✅ Store the URL in state
+                const response = await axios.get(`${WATCH_SERVICE_URL}/api/watch/${userId}/${videoId}`);                setVideoUrl(response.data.presignedUrl); // ✅ Store the URL in state
             } catch (error) {
                 console.error('Error fetching video URL:', error);
             }

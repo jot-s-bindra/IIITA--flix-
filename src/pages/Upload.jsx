@@ -10,7 +10,7 @@ import axios from 'axios'
 
 const notifyUploadService = async (userId, title, bucket) => {
   try {
-    const response = await axios.post('http://localhost:5000/api/upload-success', {
+    const response = await axios.post('http://3.105.163.2:5000/api/upload-success', { // <-- Added http://
       userId,
       title,
       bucket

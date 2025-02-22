@@ -1,9 +1,8 @@
-// src/services/uploadService.js
 import axios from 'axios'
 
 // Request Pre-signed URL from Upload Service
 export const getPresignedUrl = async (title, fileType, userId) => {
-  const response = await axios.post('http://localhost:5000/api/upload-url', {
+  const response = await axios.post('http://3.105.163.2:5000/api/upload-url', { // <-- Added http://
     title,
     fileType,
     userId
