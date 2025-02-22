@@ -1,23 +1,63 @@
-// src/pages/Watch.jsx
-import React from 'react'
-import { useParams, Link } from 'react-router-dom'
+import React, { useEffect, useRef, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import axios from 'axios';
+import Hls from 'hls.js';
 
 const Watch = () => {
-  const { userId, videoId } = useParams()
+    const { userId, videoId } = useParams();
+    const [videoUrl, setVideoUrl] = useState(null);
+    const videoRef = useRef(null);
 
-  return (
-    <div style={{ textAlign: 'center', padding: '20px' }}>
-      <h1>Now Watching: {videoId}</h1>
-      <video controls width="80%" style={{ borderRadius: '10px', marginBottom: '20px' }}>
-        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-      <br />
-      <Link to={`/${userId}/feed`} style={{ textDecoration: 'none', color: '#007bff' }}>
-        ← Back to Feed
-      </Link>
-    </div>
-  )
-}
+    // ✅ Fetch Pre-Signed URL
+    useEffect(() => {
+        const fetchVideoUrl = async () => {
+            try {
+                const response = await axios.get(`http://localhost:7000/api/watch/${userId}/${videoId}`);
+                setVideoUrl(response.data.presignedUrl); // ✅ Store the URL in state
+            } catch (error) {
+                console.error('Error fetching video URL:', error);
+            }
+        };
+        fetchVideoUrl();
+    }, [userId, videoId]);
 
-export default Watch
+    // ✅ Initialize HLS.js if videoUrl is available
+    useEffect(() => {
+        if (videoUrl && videoRef.current) {
+            const video = videoRef.current;
+
+            if (Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(videoUrl); // ✅ Use the Pre-Signed URL
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                    video.play(); // Auto-play video when ready
+                });
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = videoUrl;
+                video.addEventListener('loadedmetadata', () => {
+                    video.play();
+                });
+            }
+        }
+    }, [videoUrl]);
+
+    return (
+        <div style={{ textAlign: 'center', padding: '20px' }}>
+            <h1>Now Watching: {videoId}</h1>
+
+            {videoUrl ? (
+                <video ref={videoRef} controls width="80%" style={{ borderRadius: '10px', marginBottom: '20px' }} />
+            ) : (
+                <p>Loading video...</p>
+            )}
+
+            <br />
+            <Link to={`/${userId}/feed`} style={{ textDecoration: 'none', color: '#007bff' }}>
+                ← Back to Feed
+            </Link>
+        </div>
+    );
+};
+
+export default Watch;
