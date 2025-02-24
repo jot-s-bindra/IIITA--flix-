@@ -1,105 +1,116 @@
-// src/pages/Upload.jsx
-import React, { useState } from 'react'
-import { useParams } from 'react-router-dom'
-import UploadForm from '../components/UploadForm'
-import { validateVideo, uploadToS3 } from '../components/VideoUploader'
-import { getPresignedUrl } from '../services/uploadService'
-import '../css/upload.css'
-import '../css/global.css'
-import axios from 'axios'
+import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import UploadForm from '../components/UploadForm';
+import { validateVideo, uploadToS3 } from '../components/VideoUploader';
+import { getPresignedUrl } from '../services/uploadService';
+import '../css/upload.css';
+import '../css/global.css';
+import axios from 'axios';
 
 const notifyUploadService = async (userId, title, bucket) => {
   try {
-    const response = await axios.post('http://3.105.163.2:5000/api/upload-success', { // <-- Added http://
+    const response = await axios.post('http://3.105.163.2:5000/api/upload-success', {
       userId,
       title,
       bucket
-    })
-    console.log('Notification sent successfully:', response.data)
+    });
+    console.log('Notification sent successfully:', response.data);
   } catch (error) {
-    console.error('Error notifying upload service:', error)
+    console.error('Error notifying upload service:', error);
   }
-}
+};
 
 const Upload = () => {
-  const { userId } = useParams()
+  const { userId } = useParams();
 
-  const [title, setTitle] = useState('')
-  const [file, setFile] = useState(null)
-  const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
-  const [isUploading, setIsUploading] = useState(false)
+  const [title, setTitle] = useState('');
+  const [file, setFile] = useState(null);
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0]
-    if (!selectedFile) return
+    const selectedFile = e.target.files[0];
+    if (!selectedFile) return;
 
     if (selectedFile.type !== 'video/mp4') {
-      setError('Only MP4 files are allowed.')
-      setFile(null)
-      return
+      setError('Only MP4 files are allowed.');
+      setFile(null);
+      return;
     }
 
-    setFile(selectedFile)
-    setError('')
-  }
+    setFile(selectedFile);
+    setError('');
+  };
 
   const handleTitleChange = (e) => {
-    setTitle(e.target.value)
-  }
+    setTitle(e.target.value);
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!file || !title) {
-      setError('Please select a video and enter a title.')
-      return
+      setError('Please select a video and enter a title.');
+      return;
     }
 
-    setIsUploading(true)
-    setError('')
-    setMessage('Checking video duration...')
+    setIsUploading(true);
+    setError('');
+    setMessage('Checking video duration...');
 
     try {
-      await validateVideo(file)
-      setMessage('Video check passed. Preparing upload...')
+      await validateVideo(file);
+      setMessage('Video check passed. Preparing upload...');
 
-      setMessage('Getting upload permission...')
-      const presignedUrl = await getPresignedUrl(title, file.type, userId)
+      const presignedUrl = await getPresignedUrl(title, file.type, userId);
+      setMessage('Uploading video to server...');
 
-      // Upload the Video to S3
-      setMessage('Uploading video to server...')
-      console.log('Uploading video to server...')
-      await uploadToS3(file, presignedUrl)
+      await uploadToS3(file, presignedUrl);
+      await notifyUploadService(userId, title, 'iiita-flix-temp');
 
-      await notifyUploadService(userId, title, 'iiita-flix-temp')
-      
-      setMessage(`Success! Video "${title}" has been uploaded. 🎉`)
-      
-      setFile(null)
-      setTitle('')
+      setMessage(`Success! Video "${title}" has been uploaded. 🎉`);
+      setFile(null);
+      setTitle('');
     } catch (err) {
-      setError(err.message || 'Error uploading video')
+      setError(err.message || 'Error uploading video');
     } finally {
-      setIsUploading(false)
+      setIsUploading(false);
     }
-  }
+  };
 
   return (
-    <>
-      <UploadForm
-        title={title}
-        file={file}
-        isUploading={isUploading}
-        handleTitleChange={handleTitleChange}
-        handleFileChange={handleFileChange}
-        handleSubmit={handleSubmit}
-      />
+    <div style={{
+      background: 'linear-gradient(to bottom, #A9B5DF, #2D336B)',
+      minHeight: '100vh',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: '40px',
+      fontFamily: 'Arial, sans-serif'
+    }}>
+      <div style={{
+        backgroundColor: '#FFF2F2',
+        borderRadius: '12px',
+        padding: '30px',
+        width: '100%',
+        maxWidth: '600px',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+      }}>
+        <h1 style={{ textAlign: 'center', color: '#2D336B', marginBottom: '20px' }}>Upload Your Video</h1>
+        <UploadForm
+          title={title}
+          file={file}
+          isUploading={isUploading}
+          handleTitleChange={handleTitleChange}
+          handleFileChange={handleFileChange}
+          handleSubmit={handleSubmit}
+        />
+        {error && <p style={{ color: '#B13C77', textAlign: 'center', marginTop: '10px' }}>{error}</p>}
+        {message && <p style={{ color: '#2D336B', textAlign: 'center', marginTop: '10px' }}>{message}</p>}
+      </div>
+    </div>
+  );
+};
 
-      {error && <p className="upload-error">{error}</p>}
-      {message && <p className="upload-message">{message}</p>}
-    </>
-  )
-}
-
-export default Upload
+export default Upload;

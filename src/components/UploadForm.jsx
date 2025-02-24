@@ -11,7 +11,6 @@ const UploadForm = ({
 }) => {
   return (
     <div className="upload-container">
-      <h1>Upload a Video</h1>
       <form onSubmit={handleSubmit} className="upload-form">
         <div>
           <label>Video Title:</label>

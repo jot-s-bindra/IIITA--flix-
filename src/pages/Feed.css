@@ -1,6 +1,4 @@
-/* src/pages/Feed.css */
 
-/* General Styling */
 body {
   font-family: Arial, sans-serif;
   background-color: #f9f9f9;
@@ -10,10 +8,9 @@ body {
   box-sizing: border-box;
 }
 
-/* Feed Title at Top */
 .feed-title {
-  position: absolute;  /* ✅ Fixed at the top */
-  top: 20px;  /* ✅ Distance from the top */
+  position: absolute;  
+  top: 20px;  
   left: 50%;
   transform: translateX(-50%);
   font-size: 2.5em;
@@ -23,15 +20,13 @@ body {
   text-align: center;
 }
 
-/* Feed Container */
 .feed-container {
-  padding: 80px 20px 20px;  /* ✅ Added padding to prevent overlap */
+  padding: 80px 20px 20px;  
   max-width: 1200px;
   margin: 0 auto;
   text-align: center;
 }
 
-/* Video Grid Layout */
 .video-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -40,7 +35,6 @@ body {
   align-items: center;
 }
 
-/* Video Card */
 .video-card {
   display: block;
   border-radius: 12px;
@@ -53,13 +47,11 @@ body {
   cursor: pointer;
 }
 
-/* Hover Effect */
 .video-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Video Thumbnail */
 .thumbnail img {
   width: 100%;
   height: 180px;
@@ -67,7 +59,6 @@ body {
   display: block;
 }
 
-/* Video Info */
 .video-info {
   padding: 12px 15px;
   text-align: left;
@@ -86,7 +77,6 @@ body {
   margin: 0;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .video-grid {
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));

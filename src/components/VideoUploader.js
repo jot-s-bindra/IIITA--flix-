@@ -1,7 +1,5 @@
-// src/components/VideoUploader.js
 import axios from 'axios'
 
-// Validate video duration (≤ 15 minutes)
 export const validateVideo = (file) => {
   return new Promise((resolve, reject) => {
     const video = document.createElement('video')
@@ -18,7 +16,6 @@ export const validateVideo = (file) => {
   })
 }
 
-// Upload video to AWS S3 using the Pre-signed URL
 export const uploadToS3 = async (file, presignedUrl) => {
   try {
     await axios.put(presignedUrl, file, {

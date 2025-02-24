@@ -5,6 +5,7 @@ import Feed from './pages/Feed';
 import Watch from './pages/Watch';
 import Upload from './pages/Upload';
 import Login from './pages/Login';
+import LandingPage from './pages/LandingPage';
 import React from 'react';
 import { isAuthenticated } from './utils/auth';
 
@@ -29,7 +30,7 @@ const App = () => {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<h1 className="welcome-message">Welcome to IIITA-flix</h1>} />
+                <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/:userId/feed" element={<ProtectedRoute element={<Feed />} />} />
                 <Route path="/:userId/watch/:videoId" element={<ProtectedRoute element={<Watch />} />} />
