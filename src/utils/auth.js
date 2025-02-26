@@ -16,9 +16,9 @@
 //     }
 // };
 
-// export const isAuthenticated = async () => {
+// export const isAuthenticated = async (userId) => {
 //     try {
-//         const response = await axios.get('http://localhost:4000/api/auth/verify', {
+//         const response = await axios.get(`http://localhost:4000/api/auth/verify/${userId}`, {
 //             withCredentials: true 
 //         });
 //         return response.status === 200;
@@ -54,16 +54,18 @@ export const login = async (uid, pwd, batch) => {
     }
 };
 
-export const isAuthenticated = async () => {
+
+export const isAuthenticated = async (userId) => {
     try {
-        const response = await axios.get('http://54.252.9.15:4000/api/auth/verify', {
+        const response = await axios.get(`http://54.252.9.15:4000/api/auth/verify/${userId}`, {
             withCredentials: true 
         });
-        return response.status === 200;
+        return response.status === 200; 
     } catch (error) {
-        return false;
+        return false; 
     }
 };
+
 
 
 

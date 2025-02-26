@@ -10,8 +10,12 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const success = await login(uid, pwd, '2025');
-        if (success) navigate(`/${uid}/feed`);
-        else alert('Invalid ERP credentials');
+        if (success) {
+            localStorage.setItem('userId', uid);  // ✅ Store uid in localStorage
+            navigate(`/${uid}/feed`);
+        } else {
+            alert('Invalid ERP credentials');
+        }
     };
 
     return (

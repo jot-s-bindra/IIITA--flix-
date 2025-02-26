@@ -4,7 +4,7 @@ import axios from 'axios';
 import Hls from 'hls.js';
 
 const Watch = () => {
-    const { userId, videoId } = useParams();
+    const { userId, videoUserId, videoTitle } = useParams(); 
     const [videoUrl, setVideoUrl] = useState(null);
     const videoRef = useRef(null);
     const WATCH_SERVICE_URL = 'http://52.63.145.126:7000';
@@ -12,14 +12,14 @@ const Watch = () => {
     useEffect(() => {
         const fetchVideoUrl = async () => {
             try {
-                const response = await axios.get(`${WATCH_SERVICE_URL}/api/watch/${userId}/${videoId}`);
+                const response = await axios.get(`${WATCH_SERVICE_URL}/api/watch/${videoUserId}/${videoTitle}`);
                 setVideoUrl(response.data.presignedUrl);
             } catch (error) {
                 console.error('Error fetching video URL:', error);
             }
         };
         fetchVideoUrl();
-    }, [userId, videoId]);
+    }, [videoUserId, videoTitle]);
 
     useEffect(() => {
         if (videoUrl && videoRef.current) {
@@ -52,7 +52,9 @@ const Watch = () => {
             padding: '40px',
             fontFamily: 'Arial, sans-serif'
         }}>
-            <h1 style={{ textAlign: 'center', color: '#FFF2F2', fontSize: '2em', marginBottom: '20px' }}>Now Watching: {videoId}</h1>
+            <h1 style={{ textAlign: 'center', color: '#FFF2F2', fontSize: '2em', marginBottom: '20px' }}>
+                Now Watching: {decodeURIComponent(videoTitle)}
+            </h1>
 
             {videoUrl ? (
                 <video ref={videoRef} controls width="80%" style={{ borderRadius: '10px', marginBottom: '20px', border: '4px solid #FFF2F2' }} />

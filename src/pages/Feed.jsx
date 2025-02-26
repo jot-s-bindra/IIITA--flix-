@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const Feed = () => {
     const [videos, setVideos] = useState([]);
-    const { userId } = useParams();
+    const { userId } = useParams(); 
 
     useEffect(() => {
         const fetchVideos = async () => {
@@ -61,7 +61,7 @@ const Feed = () => {
                 {videos.map((video) => (
                     <Link
                         key={`${video.userId}-${video.title}`}
-                        to={`/${video.userId}/watch/${encodeURIComponent(video.title)}`}
+                        to={`/${userId}/watch/${video.userId}/${encodeURIComponent(video.title)}`} // ✅ Corrected URL
                         style={{
                             textDecoration: 'none',
                             color: 'inherit'
