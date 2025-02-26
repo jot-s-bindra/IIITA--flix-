@@ -1,7 +1,7 @@
 # IIITA-flix
 
 IIITA-flix is a microservices-based video streaming platform designed for the students of IIITA (Indian Institute of Information Technology, Allahabad). The platform allows students to securely upload, watch, and manage their videos using a distributed architecture that leverages AWS, Kafka, and MongoDB.
-
+![HLD of project](./YTProjectHLD.png)
 ## 📁 Project Structure
 
 This project is divided into several microservices, each responsible for a specific function:
